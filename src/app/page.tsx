@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       <Navbar />
-      <main className="lg:ml-64 p-4">
+      <main className="lg:ml-64 lg:mt-20 p-4">
         <Summation />
       </main>
     </div>

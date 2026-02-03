@@ -17,7 +17,7 @@ export default function Modetoggle({
       className={`
         w-full px-3 py-2 outline-none rounded-md transition-all cursor-pointer font-medium
         ${isDesktop ? "bg-gray-100 dark:bg-gray-800" : "bg-transparent"}
-        ${theme === "dark" ? "text-point" : "text-[#1A202C]"}
+        ${theme === "dark" ? "text-point" : "text-dark"}
       `}
     >
       <option value="white" className="bg-white text-black">
