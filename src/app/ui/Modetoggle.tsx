@@ -2,42 +2,30 @@
 
 import { useTheme } from "../contexts/ThemeContext";
 
-interface ModetoggleProps {
+export default function Modetoggle({
+  variant = "mobile",
+}: {
   variant?: "mobile" | "desktop";
-}
-
-export default function Modetoggle({ variant = "mobile" }: ModetoggleProps) {
+}) {
   const { theme, setTheme } = useTheme();
-
-  const baseClasses = "font-nanum";
-  const mobileClasses = "";
-  const desktopClasses = "w-full px-3 py-2 ";
-
-  const className = `${baseClasses} ${variant === "desktop" ? desktopClasses : mobileClasses}`;
-
-  const mobileStyle = { color: theme === "dark" ? "#7dadbe" : "#1a202c" };
-  const desktopStyle = {
-    color: theme === "dark" ? "#7dadbe" : "#1a202c",
-    background: theme === "dark" ? "#2d3748" : "#f7fafc",
-  };
+  const isDesktop = variant === "desktop";
 
   return (
-    <div>
-      <select
-        onChange={(e) =>
-          setTheme(e.target.value === "black" ? "dark" : "light")
-        }
-        value={theme === "dark" ? "black" : "white"}
-        className={className}
-        style={variant === "desktop" ? desktopStyle : mobileStyle}
-      >
-        <option value="white">
-          {variant === "desktop" ? "화이트 모드" : "화이트"}
-        </option>
-        <option value="black">
-          {variant === "desktop" ? "블랙 모드" : "블랙"}
-        </option>
-      </select>
-    </div>
+    <select
+      onChange={(e) => setTheme(e.target.value === "black" ? "dark" : "light")}
+      value={theme === "dark" ? "black" : "white"}
+      className={`
+        w-full px-3 py-2 outline-none rounded-md transition-all cursor-pointer font-medium
+        ${isDesktop ? "bg-gray-100 dark:bg-gray-800" : "bg-transparent"}
+        ${theme === "dark" ? "text-point" : "text-[#1A202C]"}
+      `}
+    >
+      <option value="white" className="bg-white text-black">
+        화이트 모드
+      </option>
+      <option value="black" className="bg-gray-800 text-white">
+        블랙 모드
+      </option>
+    </select>
   );
 }
