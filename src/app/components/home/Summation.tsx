@@ -30,6 +30,31 @@ export const Summation = () => {
           </div>
         </div>
       </div>
+
+      <div>
+        <h1 className="text-l">BITCOIN</h1>
+        <div className="flex flex-wrap">
+          <div className="py-2 w-1/2">
+            <p>현재가 : </p>
+            <h1 className="text-point text-3xl">10000</h1>
+          </div>
+
+          <div className="py-2 w-1/2">
+            <p>수익률 : </p>
+            <h1 className="text-point text-3xl">8%</h1>
+          </div>
+
+          <div className="py-2 w-1/2">
+            <p>수익률 : </p>
+            <h1 className="text-point text-3xl">8%</h1>
+          </div>
+
+          <div className="py-2 w-1/2">
+            <p>수익률 : </p>
+            <h1 className="text-point text-3xl">8%</h1>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
