@@ -1,3 +1,5 @@
+"use client";
+
 import { Summation } from "./components/home/Summation";
 import { Navbar } from "./components/nav/Navbar";
 
