@@ -13,7 +13,7 @@ export const useGetMoney = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch("http://localhost:5000/api/getMoney");
+      const response = await fetch("http://localhost:8000/api/getMoney");
 
       if (!response.ok) throw new Error("서버 응답 에러");
 
