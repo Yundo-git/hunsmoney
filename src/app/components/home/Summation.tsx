@@ -4,60 +4,71 @@ import { useGetMoney } from "../../hooks/useGetMoney";
 import { usegetEthPrice } from "../../hooks/usegetEthPrice";
 import { TotalAssets } from "./TotalAssets";
 import { CryptoInfo } from "./CryptoInfo";
+import { useGetPosition } from "../../hooks/useGetPosition";
 
 export const Summation = () => {
-  const { data, loading: moneyLoading, error: moneyError } = useGetMoney();
-
+  // 1. 모든 데이터 Hook 호출
+  const {
+    data: balanceData,
+    loading: moneyLoading,
+    error: moneyError,
+  } = useGetMoney();
   const {
     data: ethPriceData,
     loading: ethPriceLoading,
     error: ethPriceError,
   } = usegetEthPrice();
+  const {
+    data: ethPositionData,
+    loading: ethPositionLoading,
+    error: ethPositionError,
+  } = useGetPosition("ETHUSDT");
 
-  console.log("ethPriceData >>> ", ethPriceData);
-
-  // 1. 로딩 상태 통합 개선: 둘 중 하나라도 로딩 중이되, 데이터가 아직 없을 때만 로딩 표시
-  // 데이터가 하나라도 왔다면 화면 깜빡임 방지를 위해 로딩을 무시하고 렌더링을 시도합니다.
+  // 2. 통합 로딩 상태 관리
+  // 초기 데이터가 하나라도 없는 상태에서 로딩 중이라면 로딩 화면 표시
   const isInitialLoading =
-    (moneyLoading || ethPriceLoading) && (!data || !ethPriceData);
-  console.log("isInitialLoading >>> ", isInitialLoading);
-  if (isInitialLoading) return <div>데이터 불러오는 중...</div>;
+    (moneyLoading || ethPriceLoading || ethPositionLoading) &&
+    (!balanceData || !ethPriceData || !ethPositionData);
 
-  // 에러 처리
-  if (moneyError || ethPriceError)
-    return <div>에러 발생: {moneyError || ethPriceError}</div>;
+  if (isInitialLoading)
+    return <div className="p-8 text-center">데이터를 동기화 중입니다...</div>;
 
-  const balanceInfo = data?.result?.list?.[0];
-  const ethPrice = ethPriceData?.result?.[0]?.lastPrice;
-  console.log("ethPrice >>", ethPrice);
-
-  // 데이터가 없을 경우를 대비한 안전한 처리
-  if (!balanceInfo) {
+  // 3. 에러 처리
+  if (moneyError || ethPriceError || ethPositionError) {
     return (
-      <div className="space-y-6">
-        <div className="w-full space-y-4">
-          <h1 className="text-2xl lg:text-2xl font-bold">총 자산</h1>
-          <div className="flex justify-center items-center p-8 border border-point rounded-xl bg-background">
-            <p className="text-gray-500">데이터를 불러올 수 없습니다</p>
-          </div>
-        </div>
+      <div className="p-8 text-red-500 border border-red-900 rounded-xl">
+        에러 발생: {moneyError || ethPriceError || ethPositionError}
       </div>
     );
   }
 
-  const rate = data?.exchangeRate || 1350;
+  // 4. 데이터 가공 (Optional Chaining 활용)
+  const balanceInfo = balanceData?.result?.list?.[0];
+  const rate = balanceData?.exchangeRate || 1350;
+
+  // 이더리움 현재가 (Bybit V5 구조: result.list[0].lastPrice)
+  const ethCurrentPrice = ethPriceData?.result?.[0]?.lastPrice || "0";
+
+  // 포지션 데이터 가공
+  const hasEthPosition = ethPositionData?.hasPosition || false;
+  const ethROE = hasEthPosition ? `${ethPositionData?.data?.roe}%` : "0%";
+  const ethPnl = hasEthPosition
+    ? `${Number(ethPositionData?.data?.unrealisedPnl).toFixed(2)}`
+    : "0";
+
+  // 화폐 환산
   const totalEquityUSD = Number(balanceInfo?.totalEquity || 0);
   const totalKRW = (totalEquityUSD * rate).toLocaleString(undefined, {
     maximumFractionDigits: 0,
   });
-  const ethPriceKRW = (Number(ethPrice) * rate).toLocaleString(undefined, {
-    maximumFractionDigits: 0,
-  });
-
-  console.log(ethPriceKRW);
+  const ethPriceKRW = (Number(ethCurrentPrice) * rate).toLocaleString(
+    undefined,
+    { maximumFractionDigits: 0 },
+  );
 
   return (
     <div className="space-y-6">
+      {/* 총 자산 카드 섹션 */}
       <TotalAssets
         totalEquityUSD={totalEquityUSD}
         totalKRW={totalKRW}
@@ -66,15 +77,26 @@ export const Summation = () => {
         rate={rate}
       />
 
-      {/* 이더리움 정보 섹션 */}
-      <CryptoInfo
-        symbol="ETHUSDT"
-        currentPriceKRW={ethPriceKRW}
-        profitRate="8%"
-      />
+      {/* 이더리움 실시간 정보 및 수익률 섹션 */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <CryptoInfo
+          symbol="ETHUSDT"
+          currentPrice={Number(ethCurrentPrice).toLocaleString()}
+          currentPriceKRW={ethPriceKRW}
+          profitRate={ethROE}
+          pnl={ethPnl}
+          hasPosition={hasEthPosition}
+        />
 
-      {/* 비트코인 섹션 */}
-      <CryptoInfo symbol="BITCOIN" profitRate="-%" />
+        {/* 비트코인 섹션 (추후 비트코인용 Hook 추가 시 동일하게 연결) */}
+        <CryptoInfo
+          symbol="BTCUSDT"
+          currentPrice="-"
+          currentPriceKRW="-"
+          profitRate="-%"
+          // hasPosition={false}
+        />
+      </div>
     </div>
   );
 };
