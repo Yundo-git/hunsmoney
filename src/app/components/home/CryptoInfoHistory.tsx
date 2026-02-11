@@ -75,13 +75,16 @@ export const CryptoInfoHistory = ({
       </div>
 
       {/* 요약 바 */}
-      {!isOpen && (
+      {!isOpen && history && history.length > 0 && (
         <div className="mb-4 p-3 rounded-lg border border-gray-700 hover:bg-gray-900/30">
           <div className="flex justify-between items-center text-sm">
             <span className="text-gray-400">최근 거래 요약</span>
             <span className="font-bold text-point">
               {history.length}건 중 수익{" "}
-              {history.filter((t) => Number(t.closedPnl) > 0).length}건
+              {Array.isArray(history)
+                ? history.filter((t) => Number(t.closedPnl) > 0).length
+                : 0}
+              건
             </span>
           </div>
         </div>
@@ -133,71 +136,73 @@ export const CryptoInfoHistory = ({
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-900">
-                    {history.map((trade) => {
-                      const pnl = Number(trade.closedPnl);
-                      const isProfit = pnl >= 0;
+                    {history &&
+                      Array.isArray(history) &&
+                      history.map((trade) => {
+                        const pnl = Number(trade.closedPnl);
+                        const isProfit = pnl >= 0;
 
-                      // 수익률 계산 로직 (진입 원금 대비 실제 수익금 비율)
-                      const calculateProfitRate = () => {
-                        const entryPrice = Number(trade.entryPrice);
-                        const qty = Number(trade.qty);
+                        // 수익률 계산 로직 (진입 원금 대비 실제 수익금 비율)
+                        const calculateProfitRate = () => {
+                          const entryPrice = Number(trade.entryPrice);
+                          const qty = Number(trade.qty);
 
-                        const principal = entryPrice * qty; // 투입 원금
-                        if (principal === 0)
-                          return { rate: "0.00", color: "text-gray-500" };
+                          const principal = entryPrice * qty; // 투입 원금
+                          if (principal === 0)
+                            return { rate: "0.00", color: "text-gray-500" };
 
-                        const rate = (pnl / principal) * 100;
-                        return {
-                          rate: rate.toFixed(2),
-                          color:
-                            rate > 0
-                              ? "text-red-500"
-                              : rate < 0
-                                ? "text-blue-500"
-                                : "text-gray-400",
+                          const rate = (pnl / principal) * 100;
+                          return {
+                            rate: rate.toFixed(2),
+                            color:
+                              rate > 0
+                                ? "text-red-500"
+                                : rate < 0
+                                  ? "text-blue-500"
+                                  : "text-gray-400",
+                          };
                         };
-                      };
 
-                      const profitInfo = calculateProfitRate();
+                        const profitInfo = calculateProfitRate();
 
-                      return (
-                        <tr
-                          key={trade.id}
-                          className="hover:bg-gray-800/20 transition-colors"
-                        >
-                          <td className="py-4 px-2">
-                            <div className="font-bold text-sm">
-                              {trade.symbol}
-                            </div>
-                            <div className="text-[10px] text-gray-500">
-                              {trade.updatedTime}
-                            </div>
-                          </td>
-                          <td className="py-4 px-2 text-sm text-gray-300">
-                            {trade.qty}
-                          </td>
-                          <td className="py-4 px-2 text-[11px]">
-                            <div className="text-gray-400">
-                              In: {Number(trade.entryPrice).toLocaleString()}
-                            </div>
-                            <div className="text-gray-400">
-                              Out: {Number(trade.exitPrice).toLocaleString()}
-                            </div>
-                          </td>
-                          <td
-                            className={`py-4 px-2 text-right font-bold text-sm ${profitInfo.color}`}
+                        return (
+                          <tr
+                            key={trade.id}
+                            className="hover:bg-gray-800/20 transition-colors"
                           >
-                            {profitInfo.rate}%
-                          </td>
-                          <td
-                            className={`py-4 px-2 text-right font-bold text-sm ${isProfit ? "text-red-500" : "text-blue-500"}`}
-                          >
-                            {isProfit ? "+" : ""}
-                            {pnl.toFixed(4)}
-                          </td>
-                        </tr>
-                      );
-                    })}
+                            <td className="py-4 px-2">
+                              <div className="font-bold text-sm">
+                                {trade.symbol}
+                              </div>
+                              <div className="text-[10px] text-gray-500">
+                                {trade.updatedTime}
+                              </div>
+                            </td>
+                            <td className="py-4 px-2 text-sm text-gray-300">
+                              {trade.qty}
+                            </td>
+                            <td className="py-4 px-2 text-[11px]">
+                              <div className="text-gray-400">
+                                In: {Number(trade.entryPrice).toLocaleString()}
+                              </div>
+                              <div className="text-gray-400">
+                                Out: {Number(trade.exitPrice).toLocaleString()}
+                              </div>
+                            </td>
+                            <td
+                              className={`py-4 px-2 text-right font-bold text-sm ${profitInfo.color}`}
+                            >
+                              {profitInfo.rate}%
+                            </td>
+                            <td
+                              className={`py-4 px-2 text-right font-bold text-sm ${isProfit ? "text-red-500" : "text-blue-500"}`}
+                            >
+                              {isProfit ? "+" : ""}
+                              {pnl.toFixed(4)}
+                            </td>
+                          </tr>
+                        );
+                      })}
                   </tbody>
                 </table>
               </div>
