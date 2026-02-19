@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
+import { PositionResponse } from "../types/position";
 
 export const useGetPosition = (symbol: string = "ETHUSDT") => {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<PositionResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -13,7 +14,7 @@ export const useGetPosition = (symbol: string = "ETHUSDT") => {
       console.log("response >>> ", response);
       if (!response.ok) throw new Error("포지션 정보 응답 에러");
 
-      const result = await response.json();
+      const result: PositionResponse = await response.json();
       setData(result);
       console.log("result >>> ", result);
     } catch (err) {

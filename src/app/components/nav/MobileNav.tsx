@@ -9,7 +9,7 @@ export default function MobileNav() {
 
   const navItems = [
     { name: "대시보드", href: "/" },
-    { name: "포지션", href: "/positions" },
+    { name: "포지션", href: "/position" },
     { name: "거래내역", href: "/history" },
     { name: "설정", href: "/settings" },
   ];
