@@ -65,10 +65,11 @@ export const Summation = () => {
   const ethCurrentPrice = ethPriceData?.result?.[0]?.lastPrice || "0";
 
   // 포지션 데이터 가공
-  const hasEthPosition = ethPositionData?.hasPosition || false;
-  const ethROE = hasEthPosition ? `${ethPositionData?.data?.roe}%` : "0%";
+  const ethPosition = ethPositionData?.result?.list?.[0];
+  const hasEthPosition = !!ethPosition;
+  const ethROE = hasEthPosition ? `${ethPosition?.percentage || "0"}%` : "0%";
   const ethPnl = hasEthPosition
-    ? `${Number(ethPositionData?.data?.unrealisedPnl).toFixed(2)}`
+    ? `${Number(ethPosition?.unrealisedPnl || 0).toFixed(2)}`
     : "0";
 
   // 화폐 환산
