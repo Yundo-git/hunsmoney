@@ -11,7 +11,7 @@ export default function MobileNav() {
     { name: "대시보드", href: "/" },
     { name: "포지션", href: "/position" },
     { name: "거래내역", href: "/history" },
-    { name: "설정", href: "/settings" },
+    { name: "설정", href: "/setting" },
   ];
 
   return (
