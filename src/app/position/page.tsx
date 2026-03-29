@@ -22,7 +22,7 @@ export default function PositionPage() {
   // 로딩 상태
   if (positionLoading || ethPriceLoading) {
     return (
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-background">
         <Navbar />
         <main className="lg:ml-64 lg:mt-20 p-4">
           <div className="max-w-6xl mx-auto">
@@ -41,7 +41,7 @@ export default function PositionPage() {
   // 에러 상태
   if (positionError || ethPriceError) {
     return (
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-background">
         <Navbar />
         <main className="lg:ml-64 lg:mt-20 p-4">
           <div className="max-w-6xl mx-auto">
@@ -76,7 +76,7 @@ export default function PositionPage() {
     positionData.result.list.length === 0
   ) {
     return (
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-background">
         <Navbar />
         <main className="lg:ml-64 lg:mt-20 p-4">
           <div className="max-w-6xl mx-auto">
@@ -87,6 +87,107 @@ export default function PositionPage() {
               <p className="text-gray-500 text-sm">
                 보유 중인 포지션 정보를 확인할 수 있습니다.
               </p>
+            </div>
+
+            {/* Bybit 포지션 API 기능 목록 */}
+            <div className="mb-8">
+              <h2 className="text-xl font-semibold mb-4">
+                Bybit 포지션 API 기능 목록
+              </h2>
+              <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {[
+                    {
+                      method: "GET",
+                      endpoint: "/v5/position/list",
+                      desc: "포지션 정보 조회",
+                      auth: "🔒",
+                    },
+                    {
+                      method: "POST",
+                      endpoint: "/v5/position/set-leverage",
+                      desc: "레버리지 설정",
+                      auth: "🔒",
+                    },
+                    {
+                      method: "POST",
+                      endpoint: "/v5/position/switch-isolated",
+                      desc: "마진 모드 전환 (교차/격리)",
+                      auth: "🔒",
+                    },
+                    {
+                      method: "POST",
+                      endpoint: "/v5/position/trading-stop",
+                      desc: "TP/SL 설정 (익절/손절)",
+                      auth: "🔒",
+                    },
+                    {
+                      method: "POST",
+                      endpoint: "/v5/position/set-risk-limit",
+                      desc: "위험 한도 설정",
+                      auth: "🔒",
+                    },
+                    {
+                      method: "POST",
+                      endpoint: "/v5/position/switch-position-mode",
+                      desc: "포지션 모드 전환 (단방향/헷지)",
+                      auth: "🔒",
+                    },
+                    {
+                      method: "POST",
+                      endpoint: "/v5/position/set-tpsl-mode",
+                      desc: "TP/SL 모드 설정 (전체/부분)",
+                      auth: "🔒",
+                    },
+                    {
+                      method: "POST",
+                      endpoint: "/v5/position/set-auto-add-margin",
+                      desc: "자동 마진 추가 설정",
+                      auth: "🔒",
+                    },
+                    {
+                      method: "POST",
+                      endpoint: "/v5/position/add-margin",
+                      desc: "마진 수동 추가/감소",
+                      auth: "🔒",
+                    },
+                    {
+                      method: "GET",
+                      endpoint: "/v5/position/closed-pnl",
+                      desc: "청산된 PnL 기록 조회",
+                      auth: "🔒",
+                    },
+                    {
+                      method: "GET",
+                      endpoint: "/v5/position/execution-list",
+                      desc: "체결 기록 조회",
+                      auth: "🔒",
+                    },
+                    {
+                      method: "GET",
+                      endpoint: "/v5/position/delivery-record",
+                      desc: "만료 기록 조회",
+                      auth: "🔒",
+                    },
+                  ].map((api, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                    >
+                      <span className="text-xs font-mono bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 px-2 py-1 rounded">
+                        {api.method}
+                      </span>
+                      <span className="text-sm font-mono text-gray-600 dark:text-gray-300 flex-1">
+                        {api.endpoint}
+                      </span>
+                      <span className="text-sm text-gray-700 dark:text-gray-200">
+                        {api.desc}
+                      </span>
+                      <span className="text-xs">{api.auth}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
 
             <div className="flex items-center justify-center py-20">
@@ -107,10 +208,9 @@ export default function PositionPage() {
   }
 
   const positions = positionData.result.list;
-  // const currentEthPrice = ethPriceData?.result?.list?.[0]?.price || "0";
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       <Navbar />
       <main className="lg:ml-64 lg:mt-20 p-4">
         <div className="max-w-6xl mx-auto">
@@ -119,6 +219,107 @@ export default function PositionPage() {
             <p className="text-gray-500 text-sm">
               보유 중인 포지션 정보를 확인할 수 있습니다.
             </p>
+          </div>
+
+          {/* Bybit 포지션 API 기능 목록 */}
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold mb-4">
+              Bybit 포지션 API 기능 목록
+            </h2>
+            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {[
+                  {
+                    method: "GET",
+                    endpoint: "/v5/position/list",
+                    desc: "포지션 정보 조회",
+                    auth: "🔒",
+                  },
+                  {
+                    method: "POST",
+                    endpoint: "/v5/position/set-leverage",
+                    desc: "레버리지 설정",
+                    auth: "🔒",
+                  },
+                  {
+                    method: "POST",
+                    endpoint: "/v5/position/switch-isolated",
+                    desc: "마진 모드 전환 (교차/격리)",
+                    auth: "🔒",
+                  },
+                  {
+                    method: "POST",
+                    endpoint: "/v5/position/trading-stop",
+                    desc: "TP/SL 설정 (익절/손절)",
+                    auth: "🔒",
+                  },
+                  {
+                    method: "POST",
+                    endpoint: "/v5/position/set-risk-limit",
+                    desc: "위험 한도 설정",
+                    auth: "🔒",
+                  },
+                  {
+                    method: "POST",
+                    endpoint: "/v5/position/switch-position-mode",
+                    desc: "포지션 모드 전환 (단방향/헷지)",
+                    auth: "🔒",
+                  },
+                  {
+                    method: "POST",
+                    endpoint: "/v5/position/set-tpsl-mode",
+                    desc: "TP/SL 모드 설정 (전체/부분)",
+                    auth: "🔒",
+                  },
+                  {
+                    method: "POST",
+                    endpoint: "/v5/position/set-auto-add-margin",
+                    desc: "자동 마진 추가 설정",
+                    auth: "🔒",
+                  },
+                  {
+                    method: "POST",
+                    endpoint: "/v5/position/add-margin",
+                    desc: "마진 수동 추가/감소",
+                    auth: "🔒",
+                  },
+                  {
+                    method: "GET",
+                    endpoint: "/v5/position/closed-pnl",
+                    desc: "청산된 PnL 기록 조회",
+                    auth: "🔒",
+                  },
+                  {
+                    method: "GET",
+                    endpoint: "/v5/position/execution-list",
+                    desc: "체결 기록 조회",
+                    auth: "🔒",
+                  },
+                  {
+                    method: "GET",
+                    endpoint: "/v5/position/delivery-record",
+                    desc: "만료 기록 조회",
+                    auth: "🔒",
+                  },
+                ].map((api, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                  >
+                    <span className="text-xs font-mono bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 px-2 py-1 rounded">
+                      {api.method}
+                    </span>
+                    <span className="text-sm font-mono text-gray-600 dark:text-gray-300 flex-1">
+                      {api.endpoint}
+                    </span>
+                    <span className="text-sm text-gray-700 dark:text-gray-200">
+                      {api.desc}
+                    </span>
+                    <span className="text-xs">{api.auth}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* 포지션 카드 그리드 */}
